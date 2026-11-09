@@ -1,0 +1,52 @@
+{
+  "name": "ason-vscode",
+  "displayName": "ASON",
+  "description": "ASON syntax highlighting, source-preserving formatting and validation, powered by Rust and WebAssembly.",
+  "version": "0.1.0",
+  "publisher": "hemashushu",
+  "license": "SEE LICENSE IN LICENSE.additional",
+  "repository": { "type": "git", "url": "https://github.com/hemashushu/ason-vscode" },
+  "engines": { "vscode": "^1.100.0" },
+  "categories": ["Programming Languages", "Formatters"],
+  "keywords": ["ason", "formatter", "syntax", "wasm"],
+  "type": "module",
+  "browser": "./dist/extension.cjs",
+  "capabilities": { "virtualWorkspaces": true, "untrustedWorkspaces": { "supported": true } },
+  "contributes": {
+    "languages": [{ "id": "ason", "aliases": ["ASON", "ason"], "extensions": [".ason"], "configuration": "./language-configuration.json" }],
+    "grammars": [{ "language": "ason", "scopeName": "source.ason", "path": "./syntaxes/ason.tmLanguage.json" }],
+    "configuration": {
+      "title": "ASON",
+      "properties": {
+        "ason.validation.enabled": { "type": "boolean", "default": true, "scope": "resource", "description": "Validate ASON documents as you type." },
+        "ason.validation.delay": { "type": "integer", "default": 300, "minimum": 0, "maximum": 5000, "scope": "resource", "description": "Delay in milliseconds before validating an edited document." },
+        "ason.validation.maxFileSize": { "type": "integer", "default": 2097152, "minimum": 0, "scope": "resource", "description": "Maximum UTF-8 byte size for automatic validation. Explicit formatting is not limited by this setting." }
+      }
+    }
+  },
+  "scripts": {
+    "build:wasm": "node scripts/build-wasm.mjs",
+    "check-types": "tsc --noEmit",
+    "build": "npm run check-types && node esbuild.mjs",
+    "watch": "node esbuild.mjs --watch",
+    "test": "npm run build && npm run test:unit",
+    "test:unit": "node --test test/*.test.mjs",
+    "pretest:desktop": "npm run build",
+    "test:desktop": "node test/run-desktop.mjs",
+    "pretest:web": "npm run build",
+    "test:web": "vscode-test-web --quality=stable --commit=c4453f8ea430795f941c1b2ff6c9321135a74a02 --browser=chromium --headless --coi --extensionDevelopmentPath=. --extensionTestsPath=dist/test/suite.cjs test/fixtures",
+    "vscode:prepublish": "npm run build",
+    "package": "vsce package --allow-missing-repository --out ason-vscode.vsix"
+  },
+  "overrides": { "@vscode/vsce": { "minimatch": "11.0.5" } },
+  "devDependencies": {
+    "@types/vscode": "1.100.0",
+    "@vscode/test-electron": "^2.5.2",
+    "@vscode/test-web": "0.0.81",
+    "@vscode/vsce": "4.1.0",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.8.3",
+    "vscode-oniguruma": "^2.0.1",
+    "vscode-textmate": "^9.2.0"
+  }
+}

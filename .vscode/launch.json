@@ -1,0 +1,14 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run ASON Web Extension",
+      "type": "pwa-extensionHost",
+      "request": "launch",
+      "debugWebWorkerHost": true,
+      "args": ["--extensionDevelopmentPath=${workspaceFolder}", "--extensionDevelopmentKind=web", "${workspaceFolder}/test/fixtures"],
+      "outFiles": ["${workspaceFolder}/dist/**/*.js", "${workspaceFolder}/dist/**/*.cjs"],
+      "preLaunchTask": "npm: build"
+    }
+  ]
+}

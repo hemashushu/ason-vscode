@@ -1,0 +1,61 @@
+name: Test and Package
+
+on:
+  workflow_dispatch:
+    inputs:
+      formatter_ref:
+        description: Immutable ason-formatter commit containing the WASM bridge
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    env:
+      FORMATTER_REF: ${{ inputs.formatter_ref }}
+    steps:
+      - name: Require immutable source revision
+        shell: bash
+        run: '[[ "$FORMATTER_REF" =~ ^[0-9a-f]{40}$ ]]'
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: hemashushu/ason-formatter
+          ref: ${{ inputs.formatter_ref }}
+          path: formatter-source
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - uses: dtolnay/rust-toolchain@1.99.1
+        with:
+          targets: wasm32-unknown-unknown
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: formatter-source
+      - run: npm ci
+      - run: cargo install wasm-bindgen-cli --version 0.2.130 --locked
+      - run: cargo fmt --manifest-path formatter-source/Cargo.toml --all -- --check
+      - run: cargo test --manifest-path formatter-source/Cargo.toml --workspace --locked
+      - run: cargo clippy --manifest-path formatter-source/Cargo.toml --workspace --all-targets --locked -- -D warnings
+      - run: npm run build:wasm -- --formatter-dir formatter-source
+      - run: npm test
+      - run: npx playwright-core install --with-deps chromium
+      - run: npm run test:web
+      - if: runner.os == 'Linux'
+        run: xvfb-run -a npm run test:desktop
+      - if: runner.os != 'Linux'
+        run: npm run test:desktop
+      - run: npm run package
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ason-vscode-${{ runner.os }}
+          path: ason-vscode.vsix

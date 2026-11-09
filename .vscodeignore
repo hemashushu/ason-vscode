@@ -1,0 +1,13 @@
+**
+!package.json
+!README.md
+!LICENSE
+!LICENSE.additional
+!CONTRIBUTING
+!THIRD_PARTY_NOTICES.md
+!language-configuration.json
+!syntaxes/*.json
+!dist/extension.cjs
+!dist/engine.worker.js
+!dist/ason_bg.wasm
+!dist/build-info.json

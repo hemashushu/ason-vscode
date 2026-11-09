@@ -1,0 +1,90 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "ASON",
+  "scopeName": "source.ason",
+  "patterns": [
+    { "include": "#line-comment" },
+    { "include": "#block-comment" },
+    { "include": "#raw-hash-string" },
+    { "include": "#raw-string" },
+    { "include": "#trimmed-string" },
+    { "include": "#datetime" },
+    { "include": "#bytes" },
+    { "include": "#string" },
+    { "include": "#char" },
+    { "include": "#enumeration" },
+    { "include": "#boolean" },
+    { "include": "#number" },
+    { "include": "#identifier" },
+    { "name": "keyword.operator.arithmetic.ason", "match": "[+-]" },
+    { "name": "punctuation.section.braces.ason", "match": "[{}]" },
+    { "name": "punctuation.section.brackets.ason", "match": "[\\[\\]]" },
+    { "name": "punctuation.section.parens.ason", "match": "[()]" },
+    { "name": "punctuation.separator.key-value.ason", "match": ":" },
+    { "name": "punctuation.separator.comma.ason", "match": "," }
+  ],
+  "repository": {
+    "line-comment": { "name": "comment.line.double-slash.ason", "begin": "//", "end": "$" },
+    "block-comment": {
+      "name": "comment.block.ason",
+      "begin": "/\\*",
+      "end": "\\*/",
+      "patterns": [{ "include": "#block-comment" }]
+    },
+    "raw-hash-string": {
+      "name": "string.quoted.double.raw.ason",
+      "begin": "(?<![\\w\\x{00a0}-\\x{d7ff}\\x{e000}-\\x{10ffff}])r(#+)\"",
+      "end": "\"\\1"
+    },
+    "raw-string": {
+      "name": "string.quoted.double.raw.ason",
+      "begin": "(?<![\\w\\x{00a0}-\\x{d7ff}\\x{e000}-\\x{10ffff}])r\"",
+      "end": "\""
+    },
+    "trimmed-string": {
+      "name": "string.quoted.triple.ason",
+      "begin": "\"\"\"(?=\\r?$)",
+      "end": "^[ \\t]*\"\"\""
+    },
+    "datetime": {
+      "name": "string.quoted.double.datetime.ason",
+      "contentName": "constant.other.datetime.ason",
+      "begin": "(?<![\\w\\x{00a0}-\\x{d7ff}\\x{e000}-\\x{10ffff}])d\"",
+      "end": "\""
+    },
+    "bytes": {
+      "name": "string.quoted.double.bytes.ason",
+      "contentName": "constant.other.bytes.ason",
+      "begin": "(?<![\\w\\x{00a0}-\\x{d7ff}\\x{e000}-\\x{10ffff}])h\"",
+      "end": "\"",
+      "patterns": [{ "name": "constant.numeric.hex.ason", "match": "[0-9a-fA-F]{2}" }]
+    },
+    "escape": {
+      "patterns": [
+        { "name": "constant.character.escape.ason", "match": "\\\\(?:[\\\\'\"tnr0]|u\\{[0-9a-fA-F]{1,6}\\}|\\r?$)" },
+        { "name": "invalid.illegal.escape.ason", "match": "\\\\." }
+      ]
+    },
+    "string": { "name": "string.quoted.double.ason", "begin": "\"", "end": "\"", "patterns": [{ "include": "#escape" }] },
+    "char": { "name": "string.quoted.single.ason", "begin": "'", "end": "'", "patterns": [{ "include": "#escape" }] },
+    "enumeration": {
+      "match": "([a-zA-Z_\\x{00a0}-\\x{d7ff}\\x{e000}-\\x{10ffff}][a-zA-Z0-9_\\x{00a0}-\\x{d7ff}\\x{e000}-\\x{10ffff}]*)(::)([a-zA-Z_\\x{00a0}-\\x{d7ff}\\x{e000}-\\x{10ffff}][a-zA-Z0-9_\\x{00a0}-\\x{d7ff}\\x{e000}-\\x{10ffff}]*)",
+      "captures": {
+        "1": { "name": "entity.name.type.enum.ason" },
+        "2": { "name": "punctuation.accessor.ason" },
+        "3": { "name": "constant.other.enum.ason" }
+      }
+    },
+    "boolean": { "name": "constant.language.boolean.ason", "match": "(?<![\\w\\x{00a0}-\\x{d7ff}\\x{e000}-\\x{10ffff}])(?:true|false)(?![\\w\\x{00a0}-\\x{d7ff}\\x{e000}-\\x{10ffff}])" },
+    "number": {
+      "name": "constant.numeric.ason",
+      "match": "(?<![\\w\\x{00a0}-\\x{d7ff}\\x{e000}-\\x{10ffff}])(?:NaN(?:_f(?:32|64))?|Inf(?:_f(?:32|64))?|0[xX][0-9a-fA-F_]+(?:\\.[0-9a-fA-F_]+[pP][+-]?[0-9_]+(?:_?f(?:32|64))?|_?[iu](?:8|16|32|64))?|0[oO][0-7_]+(?:_?[iu](?:8|16|32|64))?|0[bB][01_]+(?:_?[iu](?:8|16|32|64))?|[0-9][0-9_]*(?:\\.[0-9_]+)?(?:[eE][+-]?[0-9_]+)?(?:_?(?:[iu](?:8|16|32|64)|f(?:32|64)))?)(?![\\w.\\x{00a0}-\\x{d7ff}\\x{e000}-\\x{10ffff}])"
+    },
+    "identifier": {
+      "patterns": [
+        { "name": "variable.other.property.ason", "match": "[a-zA-Z_\\x{00a0}-\\x{d7ff}\\x{e000}-\\x{10ffff}][a-zA-Z0-9_\\x{00a0}-\\x{d7ff}\\x{e000}-\\x{10ffff}]*(?=\\s*:(?!:))" },
+        { "name": "variable.other.ason", "match": "[a-zA-Z_\\x{00a0}-\\x{d7ff}\\x{e000}-\\x{10ffff}][a-zA-Z0-9_\\x{00a0}-\\x{d7ff}\\x{e000}-\\x{10ffff}]*" }
+      ]
+    }
+  }
+}
