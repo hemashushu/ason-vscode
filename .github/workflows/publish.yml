@@ -1,0 +1,58 @@
+name: Publish to VS Code Marketplace
+
+on:
+  workflow_dispatch:
+    inputs:
+      formatter_ref:
+        description: Paste the full 40-character SHA of a commit in https://github.com/hemashushu/ason-formatter that contains the WASM bridge. Copy it from the commit or PR page, not a branch or tag.
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      FORMATTER_REF: ${{ inputs.formatter_ref }}
+    steps:
+      - name: Check formatter commit SHA
+        shell: bash
+        run: |
+          if [[ ! "$FORMATTER_REF" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "::error::Open https://github.com/hemashushu/ason-formatter, find the commit containing the WASM bridge, and copy its full 40-character SHA from the commit or pull request page. Branch and tag names are not accepted." >&2
+            exit 1
+          fi
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: hemashushu/ason-formatter
+          ref: ${{ inputs.formatter_ref }}
+          path: formatter-source
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - uses: dtolnay/rust-toolchain@1.99.1
+        with:
+          targets: wasm32-unknown-unknown
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: formatter-source
+      - run: npm ci
+      - run: cargo install wasm-bindgen-cli --version 0.2.130 --locked
+      - run: cargo fmt --manifest-path formatter-source/Cargo.toml --all -- --check
+      - run: cargo test --manifest-path formatter-source/Cargo.toml --workspace --locked
+      - run: cargo clippy --manifest-path formatter-source/Cargo.toml --workspace --all-targets --locked -- -D warnings
+      - run: npm run build:wasm -- --formatter-dir formatter-source
+      - run: npm test
+      - run: npx playwright-core install --with-deps chromium
+      - run: npm run test:web
+      - run: xvfb-run -a npm run test:desktop
+      - name: Publish with GitHub Actions Trusted Publishing
+        run: npx @vscode/vsce publish --oidc

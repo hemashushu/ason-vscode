@@ -2,7 +2,7 @@
   "name": "ason-vscode",
   "displayName": "ASON",
   "description": "ASON syntax highlighting, source-preserving formatting and validation, powered by Rust and WebAssembly.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "publisher": "Hemashushu",
   "license": "SEE LICENSE IN LICENSE.additional",
   "repository": {

@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       formatter_ref:
-        description: Immutable ason-formatter commit containing the WASM bridge
+        description: Paste the full 40-character SHA of a commit in https://github.com/hemashushu/ason-formatter that contains the WASM bridge. Copy it from the commit or PR page, not a branch or tag.
         required: true
         type: string
 
@@ -21,9 +21,13 @@ jobs:
     env:
       FORMATTER_REF: ${{ inputs.formatter_ref }}
     steps:
-      - name: Require immutable source revision
+      - name: Check formatter commit SHA
         shell: bash
-        run: '[[ "$FORMATTER_REF" =~ ^[0-9a-f]{40}$ ]]'
+        run: |
+          if [[ ! "$FORMATTER_REF" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "::error::Open https://github.com/hemashushu/ason-formatter, find the commit containing the WASM bridge, and copy its full 40-character SHA from the commit or pull request page. Branch and tag names are not accepted." >&2
+            exit 1
+          fi
       - uses: actions/checkout@v4
       - uses: actions/checkout@v4
         with:
