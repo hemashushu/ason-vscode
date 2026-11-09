@@ -2,25 +2,79 @@
   "name": "ason-vscode",
   "displayName": "ASON",
   "description": "ASON syntax highlighting, source-preserving formatting and validation, powered by Rust and WebAssembly.",
-  "version": "0.1.0",
-  "publisher": "hemashushu",
+  "version": "1.0.0",
+  "publisher": "Hemashushu",
   "license": "SEE LICENSE IN LICENSE.additional",
-  "repository": { "type": "git", "url": "https://github.com/hemashushu/ason-vscode" },
-  "engines": { "vscode": "^1.100.0" },
-  "categories": ["Programming Languages", "Formatters"],
-  "keywords": ["ason", "formatter", "syntax", "wasm"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hemashushu/ason-vscode"
+  },
+  "engines": {
+    "vscode": "^1.145.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Formatters"
+  ],
+  "keywords": [
+    "ason",
+    "formatter",
+    "syntax",
+    "wasm"
+  ],
   "type": "module",
   "browser": "./dist/extension.cjs",
-  "capabilities": { "virtualWorkspaces": true, "untrustedWorkspaces": { "supported": true } },
+  "capabilities": {
+    "virtualWorkspaces": true,
+    "untrustedWorkspaces": {
+      "supported": true
+    }
+  },
   "contributes": {
-    "languages": [{ "id": "ason", "aliases": ["ASON", "ason"], "extensions": [".ason"], "configuration": "./language-configuration.json" }],
-    "grammars": [{ "language": "ason", "scopeName": "source.ason", "path": "./syntaxes/ason.tmLanguage.json" }],
+    "languages": [
+      {
+        "id": "ason",
+        "aliases": [
+          "ASON",
+          "ason"
+        ],
+        "extensions": [
+          ".ason"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "ason",
+        "scopeName": "source.ason",
+        "path": "./syntaxes/ason.tmLanguage.json"
+      }
+    ],
     "configuration": {
       "title": "ASON",
       "properties": {
-        "ason.validation.enabled": { "type": "boolean", "default": true, "scope": "resource", "description": "Validate ASON documents as you type." },
-        "ason.validation.delay": { "type": "integer", "default": 300, "minimum": 0, "maximum": 5000, "scope": "resource", "description": "Delay in milliseconds before validating an edited document." },
-        "ason.validation.maxFileSize": { "type": "integer", "default": 2097152, "minimum": 0, "scope": "resource", "description": "Maximum UTF-8 byte size for automatic validation. Explicit formatting is not limited by this setting." }
+        "ason.validation.enabled": {
+          "type": "boolean",
+          "default": true,
+          "scope": "resource",
+          "description": "Validate ASON documents as you type."
+        },
+        "ason.validation.delay": {
+          "type": "integer",
+          "default": 300,
+          "minimum": 0,
+          "maximum": 5000,
+          "scope": "resource",
+          "description": "Delay in milliseconds before validating an edited document."
+        },
+        "ason.validation.maxFileSize": {
+          "type": "integer",
+          "default": 2097152,
+          "minimum": 0,
+          "scope": "resource",
+          "description": "Maximum UTF-8 byte size for automatic validation. Explicit formatting is not limited by this setting."
+        }
       }
     }
   },
@@ -38,14 +92,18 @@
     "vscode:prepublish": "npm run build",
     "package": "vsce package --allow-missing-repository --out ason-vscode.vsix"
   },
-  "overrides": { "@vscode/vsce": { "minimatch": "11.0.5" } },
+  "overrides": {
+    "@vscode/vsce": {
+      "minimatch": "11.0.5"
+    }
+  },
   "devDependencies": {
-    "@types/vscode": "1.100.0",
-    "@vscode/test-electron": "^2.5.2",
+    "@types/vscode": "1.145.0",
+    "@vscode/test-electron": "^3.1.0",
     "@vscode/test-web": "0.0.81",
     "@vscode/vsce": "4.1.0",
-    "esbuild": "^0.25.0",
-    "typescript": "^5.8.3",
+    "esbuild": "^0.28.2",
+    "typescript": "^7.0.2",
     "vscode-oniguruma": "^2.0.1",
     "vscode-textmate": "^9.2.0"
   }

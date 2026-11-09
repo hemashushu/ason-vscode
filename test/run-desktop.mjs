@@ -2,7 +2,7 @@ import { runTests } from '@vscode/test-electron';
 import { resolve } from 'node:path';
 
 await runTests({
-  version: '1.100.0',
+  version: '1.145.0',
   vscodeExecutablePath: process.env.VSCODE_EXECUTABLE,
   extensionDevelopmentPath: resolve(process.env.ASON_EXTENSION_PATH ?? '.'),
   extensionTestsPath: resolve(process.env.ASON_TESTS_PATH ?? 'dist/test/suite.cjs'),
