@@ -4,6 +4,12 @@ function assert(condition: unknown, message: string): asserts condition {
     if (!condition) throw new Error(message);
 }
 
+function assertText(document: vscode.TextDocument, expected: string): void {
+    const text = document.getText();
+    const expectedText = document.eol === vscode.EndOfLine.CRLF ? expected.replaceAll('\n', '\r\n') : expected;
+    assert(text === expectedText, `Expected ${JSON.stringify(expectedText)}, got ${JSON.stringify(text)}`);
+}
+
 async function format(document: vscode.TextDocument, options = { tabSize: 2, insertSpaces: true }): Promise<void> {
     const edits = await vscode.commands.executeCommand<vscode.TextEdit[]>('vscode.executeFormatDocumentProvider', document.uri, options);
     assert(edits, 'Formatting provider returns edits');
@@ -43,7 +49,7 @@ const cases: [string, () => Promise<void>][] = [
     ['formatting and idempotence', async () => {
         const document = await vscode.workspace.openTextDocument({ language: 'ason', content: '{answer:0x2a}' });
         await format(document);
-        assert(document.getText() === '{answer: 0x2a}\n', document.getText());
+        assertText(document, '{answer: 0x2a}\n');
         const edits = await vscode.commands.executeCommand<vscode.TextEdit[]>('vscode.executeFormatDocumentProvider', document.uri, { tabSize: 2, insertSpaces: true });
         assert(!edits?.length, 'Already formatted document has no edits');
     }],
@@ -97,7 +103,7 @@ const cases: [string, () => Promise<void>][] = [
             await waitForDiagnostics(document, diagnostics => diagnostics.length === 0);
             const valid = await vscode.workspace.openTextDocument({ language: 'ason', content: '{a:1}' });
             await format(valid);
-            assert(valid.getText() === '{a: 1}\n', 'Explicit formatting ignores automatic validation limit');
+            assertText(valid, '{a: 1}\n');
         } finally {
             await settings.update('enabled', originalEnabled, vscode.ConfigurationTarget.Workspace);
             await settings.update('maxFileSize', originalLimit, vscode.ConfigurationTarget.Workspace);
@@ -122,7 +128,7 @@ const cases: [string, () => Promise<void>][] = [
             await vscode.window.showTextDocument(document);
             await replace(document, '{a:2}');
             assert(await document.save(), 'Document saves');
-            assert(document.getText() === '{a: 2}\n', `Format on save: ${document.getText()}`);
+            assertText(document, '{a: 2}\n');
             await vscode.commands.executeCommand('workbench.action.closeActiveEditor');
             await waitForDiagnostics(document, diagnostics => diagnostics.length === 0);
         } finally {
