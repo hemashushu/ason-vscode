@@ -6,7 +6,11 @@ The extension runs as a web extension in desktop VS Code and VS Code for the Web
 
 ## Install and Use
 
-Install the packaged VSIX using _Extensions: Install from VSIX..._, then open a file ending in `.ason`. For an untitled document, select the _ASON_ language mode. Choose _Format Document_ to format the entire document.
+You can install the extension from the Visual Studio Code Marketplace, search for "ASON" (identifier: `Hemashushu.ason-vscode`), and install it directly.
+
+Or download the VSIX package from the [ason-vscode repository](https://github.com/hemashushu/ason-vscode) and install it using _Extensions: Install from VSIX..._ in VS Code.
+
+Once the extension is installed, open a file ending in `.ason`. For an untitled document, select the _ASON_ language mode. Choose _Format Document_ to format the entire document.
 
 To use these editor settings, add them to your VS Code settings:
 
@@ -46,7 +50,7 @@ Explicit formatting is not limited by the automatic validation size limit. The w
 
 ## Build from Source
 
-To build from source, you need Node.js 24 or later, npm, Rust with the `wasm32-unknown-unknown` target, and `wasm-bindgen-cli` 0.2.130. The project was tested with Rust 1.99.1.
+To build the VSIX package from source, you need Node.js 24 or later, npm, Rust with the `wasm32-unknown-unknown` target, and `wasm-bindgen-cli` 0.2.130. The project was tested with Rust 1.99.1.
 
 ```sh
 rustup target add wasm32-unknown-unknown
@@ -91,14 +95,16 @@ Press F5 to launch the "Run ASON Web Extension" configuration. Build the WASM en
 
 By default, `test:desktop` downloads VS Code 1.145.0. To use an existing desktop installation, set `VSCODE_EXECUTABLE` to the path of its executable. `test:web` uses a pinned stable VS Code Web build and Chromium with cross-origin isolation enabled. Together, the tests cover the TextMate grammar, WASM, worker scheduling, and formatting, diagnostics, and save workflows in both extension hosts.
 
+The desktop test launcher disables Electron background timer throttling so worker-based validation can finish even when the test window is not focused. Both hosts can print VS Code startup warnings about API proposals, account services, or file watching; the web host can also report an initial file-system-provider warning and a missing optional `package.nls.json`. The invalid-formatting test intentionally logs `Cannot format ASON: Duplicate key "a" in Object.`. These messages alone do not indicate a failed test: a successful run ends with `8 ASON host tests passed.` and exit code 0. A diagnostic timeout or nonzero exit code is a real test failure.
+
 The manually triggered CI workflow accepts an immutable formatter commit SHA that includes the bridge. It runs on Linux, macOS, and Windows. Until the companion changes are committed and available, build locally using the explicitly supplied formatter checkout. This project does not publish releases or commit changes automatically.
 
 ## Links
 
 - [ASON Specification](https://github.com/hemashushu/ason/blob/main/docs/specification.md)
-- [ASON VS Code Extension](https://github.com/hemashushu/ason-vscode) on GitHub
-- [ASON Rust Library](https://github.com/hemashushu/ason) on GitHub
-- [ASON-Formatter library](https://github.com/hemashushu/ason-formatter) on GitHub
+- [ASON Visual Studio Code Extension](https://github.com/hemashushu/ason-vscode)
+- [ASON-Formatter library](https://github.com/hemashushu/ason-formatter)
+- [ASON Rust Library](https://github.com/hemashushu/ason)
 
 ## License
 

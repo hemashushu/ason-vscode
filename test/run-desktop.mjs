@@ -6,5 +6,14 @@ await runTests({
   vscodeExecutablePath: process.env.VSCODE_EXECUTABLE,
   extensionDevelopmentPath: resolve(process.env.ASON_EXTENSION_PATH ?? '.'),
   extensionTestsPath: resolve(process.env.ASON_TESTS_PATH ?? 'dist/test/suite.cjs'),
-  launchArgs: [resolve('test/fixtures'), '--extensionDevelopmentKind=web', '--disable-workspace-trust', '--skip-welcome', '--skip-release-notes', '--disable-extensions']
+  launchArgs: [
+    resolve('test/fixtures'),
+    '--extensionDevelopmentKind=web',
+    '--disable-workspace-trust',
+    '--skip-welcome',
+    '--skip-release-notes',
+    '--disable-extensions',
+    '--disable-background-timer-throttling',
+    '--disable-renderer-backgrounding'
+  ]
 });
