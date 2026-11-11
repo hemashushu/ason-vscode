@@ -6,6 +6,7 @@
 !CONTRIBUTING
 !THIRD_PARTY_NOTICES.md
 !language-configuration.json
+!images/ason-vscode.png
 !syntaxes/*.json
 !dist/extension.cjs
 !dist/engine.worker.js

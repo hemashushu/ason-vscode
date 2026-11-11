@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none" role="img" aria-labelledby="title">
+  <title id="title">ASON for Visual Studio Code</title>
+  <path d="M37 15h37l22 22v66a8 8 0 0 1-8 8H37a8 8 0 0 1-8-8V23a8 8 0 0 1 8-8Z" fill="#F7F6F0" stroke="#183F3B" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M74 16v14a8 8 0 0 0 8 8h13" fill="#F2A13A" stroke="#F2A13A" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M52 47c-4 0-5 3-5 7v3c0 4-2 6-6 7 4 1 6 3 6 7v3c0 4 1 7 5 7" stroke="#183F3B" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M77 47c4 0 5 3 5 7v3c0 4 2 6 6 7-4 1-6 3-6 7v3c0 4-1 7-5 7" stroke="#183F3B" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="57" cy="57" r="2.5" fill="#E36E51"/>
+  <path d="M63 57h9" stroke="#168879" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="60" cy="65" r="2.5" fill="#168879"/>
+  <path d="M66 65h9" stroke="#183F3B" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="57" cy="73" r="2.5" fill="#F2A13A"/>
+  <path d="M63 73h6" stroke="#183F3B" stroke-width="3" stroke-linecap="round"/>
+  <path d="m101 87 2.5 6.5 6.5 2.5-6.5 2.5-2.5 6.5-2.5-6.5-6.5-2.5 6.5-2.5 2.5-6.5Z" fill="#E36E51" stroke="#F7F6F0" stroke-width="2" stroke-linejoin="round"/>
+</svg>
