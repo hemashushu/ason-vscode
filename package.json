@@ -79,7 +79,6 @@
     }
   },
   "scripts": {
-    "build:wasm": "node scripts/build-wasm.mjs",
     "check-types": "tsc --noEmit",
     "build": "npm run check-types && node esbuild.mjs",
     "watch": "node esbuild.mjs --watch",
@@ -98,6 +97,7 @@
     }
   },
   "devDependencies": {
+    "@hemashushu/ason-format-wasm": "file:vendor/hemashushu-ason-format-wasm-1.1.1.tgz",
     "@types/vscode": "1.145.0",
     "@vscode/test-electron": "^3.1.0",
     "@vscode/test-web": "0.0.81",

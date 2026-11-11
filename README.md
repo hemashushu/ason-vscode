@@ -4,6 +4,26 @@ Syntax highlighting, source-preserving formatting, and live validation for [ASON
 
 The extension runs as a web extension in desktop VS Code and VS Code for the Web, including vscode.dev and github.dev. It supports documents in remote and virtual workspaces. Rust, a native formatter executable, and network access are not required at runtime. Documents are processed locally; their contents are never sent to a service.
 
+<!-- @import "[TOC]" {cmd="toc" depthFrom=2 depthTo=4 orderedList=false} -->
+
+<!-- code_chunk_output -->
+
+- [Install and Use](#install-and-use)
+- [Formatting and Diagnostics](#formatting-and-diagnostics)
+- [Build from Source](#build-from-source)
+  - [Requirements](#requirements)
+  - [Get the Source](#get-the-source)
+  - [Build](#build)
+  - [Test](#test)
+  - [Package](#package)
+  - [Develop](#develop)
+  - [Continuous Integration](#continuous-integration)
+- [Links](#links)
+- [License](#license)
+
+<!-- /code_chunk_output -->
+
+
 ## Install and Use
 
 Search for "ASON" in VS Code's Extensions view and install `Hemashushu.ason-vscode` from the Visual Studio Code Marketplace.
@@ -12,7 +32,7 @@ Or download the VSIX package from the [ason-vscode repository](https://github.co
 
 Once the extension is installed, open a file ending in `.ason`. For an untitled document, select the _ASON_ language mode. Choose _Format Document_ to format the entire document.
 
-To enable format on save with four-space indentation, add these settings:
+To customize the formatting behavior for ASON files, modify the settings under the `[ason]` section in your VS Code settings file.
 
 ```json
 {
@@ -21,9 +41,11 @@ To enable format on save with four-space indentation, add these settings:
     "editor.formatOnSave": true,
     "editor.insertSpaces": true,
     "editor.tabSize": 4
-  }
+  },
 }
 ```
+
+The settings of the extension itself can be customized under the `ASON` category in the VS Code settings UI.
 
 Syntax highlighting follows the active theme. It covers nested comments, typed numbers and hex floats, Unicode identifiers, enumerations, characters, ordinary, raw, and auto-trimmed strings, date-times, and hexadecimal byte data. Highlighting remains available while a string, comment, or container is incomplete, even if the formatter engine fails to load.
 
@@ -53,58 +75,36 @@ Explicit formatting is not limited by the automatic validation size limit. The w
 ### Requirements
 
 - Node.js 24 or later and npm. You can manage Node.js with [fnm](https://github.com/Schniz/fnm).
-- Rust with the `wasm32-unknown-unknown` target. The project was tested with Rust 1.99.1.
-- `wasm-bindgen-cli` **0.2.130**. The build script requires this exact version.
 - Network access to download build dependencies, Chromium, and the test versions of VS Code.
-
-#### Windows Setup
-
-In Visual Studio Installer (verified with Visual Studio Community 2026), select the **Desktop development with C++** workload and explicitly enable **C++ Clang tools for Windows**; this optional component may not be selected by default. Run the Cargo installation below from **Developer PowerShell for VS**. Without Clang, installation can fail while compiling the `ring` dependency with `failed to find tool "clang": program not found`, even if ordinary Rust programs compile successfully.
-
-For SSH or other terminal-only sessions, initialize the same development environment in your existing PowerShell terminal:
-
-```powershell
-Import-Module 'C:\Program Files\Microsoft Visual Studio\18\Community\Common7\Tools\Microsoft.VisualStudio.DevShell.dll'
-Enter-VsDevShell 82f965c8 -SkipAutomaticLocation
-```
-
-Replace these example values with those from your installation:
-
-- **DLL path:** The drive, installation directory, version directory `18`, and edition `Community` may differ.
-- **Instance ID:** Replace `82f965c8` with your Visual Studio instance ID.
-
-Find both values in the **Target** field of your **Developer PowerShell for VS** shortcut: the path follows `Import-Module`, and the instance ID follows `Enter-VsDevShell`. They may change after reinstalling Visual Studio. `-SkipAutomaticLocation` preserves your working directory. The environment applies only to the current terminal session; rerun these commands after reconnecting over SSH.
-
-### Install the Toolchain
-
-```sh
-rustup target add wasm32-unknown-unknown
-cargo install wasm-bindgen-cli --version 0.2.130 --locked
-```
-
-If the build reports that `wasm-bindgen` cannot be found, ensure Cargo's binary directory (`$HOME/.cargo/bin` by default) is on your terminal's `PATH`.
 
 ### Get the Source
 
-Clone `ason-vscode` and `ason-formatter` into sibling directories. The formatter checkout must include the `ason-format-wasm` crate and its Cargo lockfile. A separate checkout of the `ason` repository is not required: Cargo downloads the ASON library as a registry dependency of the formatter.
+Clone this repository and navigate into it:
 
 ```sh
 git clone https://github.com/hemashushu/ason-vscode.git
-git clone https://github.com/hemashushu/ason-formatter.git
 cd ason-vscode
 ```
 
 ### Build
 
-Run the following commands from `ason-vscode`:
+Run the following commands from `ason-vscode` workspace:
 
 ```sh
 npm ci
-npm run build:wasm -- --formatter-dir ../ason-formatter
 npm run build
 ```
 
-Set `ASON_FORMATTER_DIR` instead of passing `--formatter-dir` if you prefer. Generated assets are ignored by version control, so build the WASM engine before compiling or packaging. The build uses the formatter's Cargo lockfile, checks the binding tool's version, and records compiler versions and artifact hashes in the package.
+The extension consumes the versioned `@hemashushu/ason-format-wasm` npm package.
+Until its first public npm release, the dependency is a checked-in, precompiled
+tarball in `vendor/`, pinned by `package-lock.json`. `npm ci` installs it without
+building Rust or accessing the formatter repository. See [vendor/README.md](vendor/README.md)
+for updating the package or switching to an exact npm registry version.
+
+Each build verifies the package version and hashes of its WASM, JS bindings,
+types and license files. It bundles the JS and copies the matching WASM, build
+metadata and dependency notices into the extension. Source and Cargo lockfile
+hashes and toolchain versions come from the upstream package build.
 
 ### Test
 
@@ -140,11 +140,20 @@ This rebuilds the JavaScript and creates `ason-vscode.vsix` in the current direc
 
 ### Develop
 
-Build the WASM engine once, then press F5 to launch the "Run ASON Web Extension" configuration. `npm run watch` rebuilds the JavaScript as you edit. Rebuild the WASM engine after changing the Rust code.
+Run `npm ci`, then press F5 to launch the "Run ASON Web Extension" configuration.
+`npm run watch` rebuilds the JavaScript as you edit. Changes to the Rust engine
+are built and tested in [ason-formatter](https://github.com/hemashushu/ason-formatter),
+then consumed here by updating the npm package and lockfile, not by pointing
+this build at a source checkout.
 
 ### Continuous Integration
 
-The manually triggered **Test and Package** workflow requires the full 40-character SHA of a formatter commit that includes the WASM bridge. It runs on Linux, macOS, and Windows, with a 15-minute timeout for each Web or desktop host-test step, and uploads a VSIX artifact for each OS. If the required formatter changes are not yet available remotely, build with a local checkout instead. The workflow does not publish releases or commit changes.
+The manually triggered **Test and Package** workflow runs on Linux, macOS, and
+Windows, with a 15-minute timeout for each Web or desktop host-test step, and
+uploads a VSIX artifact for each OS. It installs the locked npm dependencies and
+does not check out formatter sources or install Rust tools. No formatter commit
+input is required. Rust checks, WASM package tests and npm publishing belong to
+the formatter repository. This workflow does not publish releases or commit changes.
 
 ## Links
 

@@ -1,4 +1,4 @@
-import init, { formatDocument, validateDocument } from '../generated/ason.js';
+import init, { formatDocument, validateDocument } from '@hemashushu/ason-format-wasm';
 import type { EngineReply, EngineRequest, EngineResult } from './protocol';
 
 function reply(message: EngineReply): void {

@@ -1,15 +1,13 @@
 import { build, context } from 'esbuild';
-import { copyFile, mkdir, readFile } from 'node:fs/promises';
-import { createHash } from 'node:crypto';
+import { copyFile, mkdir } from 'node:fs/promises';
+import { resolve } from 'node:path';
+import { readWasmPackage } from './scripts/wasm-package.mjs';
 
-const info = JSON.parse(await readFile('generated/build-info.json', 'utf8'));
-const hash = data => createHash('sha256').update(data).digest('hex');
-if (hash(await readFile('generated/ason_bg.wasm')) !== info.wasmSha256 || hash(await readFile('THIRD_PARTY_NOTICES.md')) !== info.noticesSha256) {
-  throw new Error('Generated WASM/notices are incomplete or stale. Run npm run build:wasm first.');
-}
+const { directory } = await readWasmPackage();
 await mkdir('dist', { recursive: true });
-await copyFile('generated/ason_bg.wasm', 'dist/ason_bg.wasm');
-await copyFile('generated/build-info.json', 'dist/build-info.json');
+await copyFile(resolve(directory, 'pkg/ason_bg.wasm'), 'dist/ason_bg.wasm');
+await copyFile(resolve(directory, 'pkg/build-info.json'), 'dist/build-info.json');
+await copyFile(resolve(directory, 'THIRD_PARTY_NOTICES.md'), 'THIRD_PARTY_NOTICES.md');
 const common = { bundle: true, platform: 'browser', target: 'es2022', sourcemap: true, logLevel: 'info' };
 const workerGuard = {
   name: 'worker-runtime-guard',

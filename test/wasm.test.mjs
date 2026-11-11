@@ -1,11 +1,15 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { cp, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { Worker } from 'node:worker_threads';
 import { once } from 'node:events';
-import init, { formatDocument, validateDocument } from '../generated/ason.js';
+import init, { formatDocument, validateDocument } from '@hemashushu/ason-format-wasm';
+import { readWasmPackage } from '../scripts/wasm-package.mjs';
 
-await init({ module_or_path: await readFile(new URL('../generated/ason_bg.wasm', import.meta.url)) });
+await init({ module_or_path: await readFile(new URL(import.meta.resolve('@hemashushu/ason-format-wasm/ason_bg.wasm'))) });
 const format = (source, spaces = true, crlf = false) => JSON.parse(formatDocument(source, 2, spaces, crlf));
 
 test('WASM keeps literals/comments intact with all structural layouts', () => {
@@ -28,6 +32,33 @@ test('WASM structured diagnostics use UTF-16 exclusive ranges', () => {
   assert.equal(JSON.parse(validateDocument('[1 true]')).error.kind, 'document');
   assert.equal(JSON.parse(validateDocument('[')).error.start, 1);
   for (const value of ['d"2024-03-16T16:30:50+08:00"', '0x1.8p+2_f64', 'Option::Some("中")']) assert.equal(JSON.parse(validateDocument(value)).status, 'success');
+});
+
+test('build copies verified npm package WASM and license notices', async () => {
+  const { info } = await readWasmPackage();
+  const builtInfo = JSON.parse(await readFile(new URL('../dist/build-info.json', import.meta.url), 'utf8'));
+  assert.deepEqual(builtInfo, info);
+  for (const [path, expected] of [['../dist/ason_bg.wasm', info.wasmSha256], ['../THIRD_PARTY_NOTICES.md', info.noticesSha256]]) {
+    assert.equal(createHash('sha256').update(await readFile(new URL(path, import.meta.url))).digest('hex'), expected);
+  }
+});
+
+test('build rejects mismatched bindings and incomplete package metadata', async () => {
+  const { directory, info } = await readWasmPackage();
+  const temporary = await mkdtemp(join(tmpdir(), 'ason-vscode-wasm-'));
+  try {
+    await cp(directory, temporary, { recursive: true });
+    const bindings = join(temporary, 'pkg/ason.js');
+    const original = await readFile(bindings);
+    await writeFile(bindings, '// mismatched bindings\n');
+    await assert.rejects(readWasmPackage(temporary), /integrity check failed: pkg\/ason.js/);
+    await writeFile(bindings, original);
+    const { ['pkg/ason.js']: omitted, ...files } = info.files;
+    await writeFile(join(temporary, 'pkg/build-info.json'), JSON.stringify({ ...info, files }));
+    await assert.rejects(readWasmPackage(temporary), /Missing SHA-256 for pkg\/ason.js/);
+  } finally {
+    await rm(temporary, { recursive: true, force: true });
+  }
 });
 
 test('bundled worker initializes and returns real WASM results', { timeout: 10000 }, async () => {
