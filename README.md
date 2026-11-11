@@ -26,7 +26,7 @@ It works in desktop VS Code and VS Code for the Web, including vscode.dev and gi
 
 ## Install and Use
 
-Install **ASON** (`Hemashushu.ason-vscode`) from the Extensions view. You can also install a downloaded VSIX by choosing _Extensions: Install from VSIX..._.
+Install **ASON** (`Hemashushu.ason-vscode`) from the Extensions view. You can also build the VSIX file `ason-vscode.vsix` from the source and install it using _Extensions: Install from VSIX..._ in VS Code.
 
 Open a `.ason` file to get started. For an untitled file, select _ASON_ as the language mode. Choose _Format Document_ to format the document.
 

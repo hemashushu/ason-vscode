@@ -27,4 +27,4 @@ generated/
 /THIRD_PARTY_NOTICES.md
 .vscode-test/
 .vscode-test-web/
-
+*.vsix
