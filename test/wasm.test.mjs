@@ -34,6 +34,23 @@ test('WASM structured diagnostics use UTF-16 exclusive ranges', () => {
   for (const value of ['d"2024-03-16T16:30:50+08:00"', '0x1.8p+2_f64', 'Option::Some("中")']) assert.equal(JSON.parse(validateDocument(value)).status, 'success');
 });
 
+test('WASM validates and preserves enum shorthands', () => {
+  for (const value of ['Some(11)', 'None', 'Ok(11)', 'Err("failed")', 'Some(Ok([11,13,17]))', 'Result::Ok(Some(11))', 'Option::None']) {
+    assert.equal(JSON.parse(validateDocument(value)).status, 'success', value);
+    const result = format(value);
+    assert.equal(result.status, 'success', value);
+    assert.equal(JSON.parse(validateDocument(result.text)).status, 'success', value);
+    assert.equal(format(result.text).text, result.text, value);
+    assert.ok(result.text.startsWith(value.split('(')[0]), value);
+  }
+  for (const key of ['Some', 'None', 'Ok', 'Err']) {
+    assert.equal(JSON.parse(validateDocument(`{${key}: 1}`)).status, 'error', key);
+  }
+  for (const key of ['some', 'NONE', 'ok', 'ERR', 'SomeValue']) {
+    assert.equal(JSON.parse(validateDocument(`{${key}: 1}`)).status, 'success', key);
+  }
+});
+
 test('build copies verified npm package WASM and license notices', async () => {
   const { info } = await readWasmPackage();
   const builtInfo = JSON.parse(await readFile(new URL('../dist/build-info.json', import.meta.url), 'utf8'));

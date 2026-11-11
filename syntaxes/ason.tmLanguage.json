@@ -13,6 +13,7 @@
     { "include": "#string" },
     { "include": "#char" },
     { "include": "#enumeration" },
+    { "include": "#enumeration-shorthand" },
     { "include": "#boolean" },
     { "include": "#number" },
     { "include": "#identifier" },
@@ -74,6 +75,10 @@
         "2": { "name": "punctuation.accessor.ason" },
         "3": { "name": "constant.other.enum.ason" }
       }
+    },
+    "enumeration-shorthand": {
+      "name": "constant.other.enum.ason",
+      "match": "(?<![\\w\\x{00a0}-\\x{d7ff}\\x{e000}-\\x{10ffff}])(?:Some|None|Ok|Err)(?![\\w\\x{00a0}-\\x{d7ff}\\x{e000}-\\x{10ffff}])"
     },
     "boolean": { "name": "constant.language.boolean.ason", "match": "(?<![\\w\\x{00a0}-\\x{d7ff}\\x{e000}-\\x{10ffff}])(?:true|false)(?![\\w\\x{00a0}-\\x{d7ff}\\x{e000}-\\x{10ffff}])" },
     "number": {

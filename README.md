@@ -47,6 +47,8 @@ Extension settings are available under the **ASON** category in VS Code.
 
 Syntax highlighting follows your active theme and covers nested comments, typed numbers, hex floats, Unicode identifiers, enums, strings, dates, and byte data. It remains available while you type, even when a document is incomplete.
 
+The `Option` and `Result` variants also support the case-sensitive shorthand forms `Some(value)`, `None`, `Ok(value)`, and `Err(value)`. These four names are reserved and cannot be used as object keys.
+
 ## Formatting and Diagnostics
 
 Formatting follows the editor's indentation and the document's LF or CRLF setting. Containers stay on one line when they fit within 80 characters, unless comments or multiline tokens require line breaks; longer containers use multiple lines. Formatting removes optional commas and extra blank lines, adds a space after each colon, and ends the document with a newline.

@@ -53,6 +53,14 @@ const cases: [string, () => Promise<void>][] = [
         const edits = await vscode.commands.executeCommand<vscode.TextEdit[]>('vscode.executeFormatDocumentProvider', document.uri, { tabSize: 2, insertSpaces: true });
         assert(!edits?.length, 'Already formatted document has no edits');
     }],
+    ['enum shorthand formatting and diagnostics', async () => {
+        const document = await vscode.workspace.openTextDocument({ language: 'ason', content: '{Some:1}' });
+        await waitForDiagnostics(document, diagnostics => diagnostics.length === 1);
+        await replace(document, '{value:Some(Ok(11)) empty:None}');
+        await waitForDiagnostics(document, diagnostics => diagnostics.length === 0);
+        await format(document);
+        assertText(document, '{value: Some(Ok(11)) empty: None}\n');
+    }],
     ['tab indentation and CRLF', async () => {
         const document = await vscode.workspace.openTextDocument({ language: 'ason', content: '{// note\r\na:1}' });
         assert(document.eol === vscode.EndOfLine.CRLF, 'Input uses CRLF');

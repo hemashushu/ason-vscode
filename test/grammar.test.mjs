@@ -58,6 +58,19 @@ test('Unicode names, enum variants and specialized literals', () => {
   scoped('h"48 65"', '48', 'constant.other.bytes.ason');
   scoped("'中'", '中', 'string.quoted.single.ason');
 });
+test('enum shorthands are case-sensitive whole identifiers', () => {
+  for (const variant of ['Some', 'None', 'Ok', 'Err']) {
+    scoped(variant, variant, 'constant.other.enum.ason');
+    scoped(`Type::${variant}`, variant, 'constant.other.enum.ason');
+    for (const identifier of [`${variant}Value`, `x${variant}`, `${variant}中`]) {
+      assert.ok(!tokenize(identifier).flat().some(token => token.scopes.includes('constant.other.enum.ason')));
+    }
+  }
+  for (const identifier of ['some', 'NONE', 'ok', 'ERR']) {
+    assert.ok(!tokenize(identifier).flat().some(token => token.scopes.includes('constant.other.enum.ason')));
+  }
+  scoped('Some::Value', 'Some', 'entity.name.type.enum.ason');
+});
 test('normal escapes and unsupported escape sequences', () => {
   scoped('"a\\u{1f600}\\n"', '\\u{1f600}', 'constant.character.escape.ason');
   scoped('"a\\x41"', '\\x', 'invalid.illegal.escape.ason');
