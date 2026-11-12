@@ -55,7 +55,7 @@ Formatting follows the editor's indentation and the document's LF or CRLF settin
 
 Literal spellings and comment text are preserved. VS Code normalizes line endings when it applies edits, so files that mix LF and CRLF may change. Invalid documents are not partially formatted. An ASON document must contain exactly one root value, so empty and comment-only documents cannot be formatted.
 
-Live validation reports the first syntax or validation error after a short delay. It checks ASON itself, not a user-defined schema. Some collection errors are reported at the document level instead of being attached to a specific token.
+Live validation reports the first syntax or validation error after a short delay. It checks ASON itself, not a user-defined schema. Errors are attached to the source they describe. For example, a list element whose type differs from the earlier elements, or a reserved word such as `Some` or `NaN` used as an enumeration type name, is underlined in place.
 
 | Setting                       | Default          | Description                                      |
 | ----------------------------- | ---------------- | ------------------------------------------------ |
