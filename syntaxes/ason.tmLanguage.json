@@ -78,7 +78,7 @@
     },
     "enumeration-shorthand": {
       "name": "constant.other.enum.ason",
-      "match": "(?<![\\w\\x{00a0}-\\x{d7ff}\\x{e000}-\\x{10ffff}])(?:Some|None|Ok|Err)(?![\\w\\x{00a0}-\\x{d7ff}\\x{e000}-\\x{10ffff}])"
+      "match": "(?<![\\w\\x{00a0}-\\x{d7ff}\\x{e000}-\\x{10ffff}])(?:Some|None|Ok|Err)(?![\\w\\x{00a0}-\\x{d7ff}\\x{e000}-\\x{10ffff}])(?!\\s*:(?!:))"
     },
     "boolean": { "name": "constant.language.boolean.ason", "match": "(?<![\\w\\x{00a0}-\\x{d7ff}\\x{e000}-\\x{10ffff}])(?:true|false)(?![\\w\\x{00a0}-\\x{d7ff}\\x{e000}-\\x{10ffff}])" },
     "number": {

@@ -108,19 +108,25 @@ const cases: [string, () => Promise<void>][] = [
         async () => {
             const document = await vscode.workspace.openTextDocument({
                 language: "ason",
-                content: "{Some:1}",
+                content: "{true:1}",
             });
             await waitForDiagnostics(
                 document,
                 (diagnostics) => diagnostics.length === 1,
             );
-            await replace(document, "{value:Some(Ok(11)) empty:None}");
+            await replace(
+                document,
+                '{Some:Some(Ok(11)) None:None Ok:Ok(11) Err:Err("failed")}',
+            );
             await waitForDiagnostics(
                 document,
                 (diagnostics) => diagnostics.length === 0,
             );
             await format(document);
-            assertText(document, "{value: Some(Ok(11)) empty: None}\n");
+            assertText(
+                document,
+                '{Some: Some(Ok(11)) None: None Ok: Ok(11) Err: Err("failed")}\n',
+            );
         },
     ],
     [
@@ -178,14 +184,14 @@ const cases: [string, () => Promise<void>][] = [
                 typeError[0].range.start.line === 1,
                 JSON.stringify(typeError[0].range),
             );
-            await replace(document, "[Some::A]");
+            await replace(document, "[NaN::A]");
             const reserved = await waitForDiagnostics(
                 document,
                 (diagnostics) =>
-                    diagnostics[0]?.message.includes("reserved") ?? false,
+                    diagnostics[0]?.message.includes("keyword") ?? false,
             );
             assert(
-                document.getText(reserved[0].range) === "Some",
+                document.getText(reserved[0].range) === "NaN",
                 "Reserved-name diagnostic selects the type name",
             );
             await replace(document, "[");

@@ -47,7 +47,7 @@ Extension settings are available under the **ASON** category in VS Code.
 
 Syntax highlighting follows your active theme and covers nested comments, typed numbers, hex floats, Unicode identifiers, enums, strings, dates, and byte data. It remains available while you type, even when a document is incomplete.
 
-The `Option` and `Result` variants also support the case-sensitive shorthand forms `Some(value)`, `None`, `Ok(value)`, and `Err(value)`. These four names are reserved and cannot be used as object keys.
+The `Option` and `Result` variants also support the case-sensitive shorthand forms `Some(value)`, `None`, `Ok(value)`, and `Err(value)`. These four names are not reserved: they can also be used as object keys, enumeration type names, and variant names, as in `{Some: Some(1)}`, `Some::Value`, and `Custom::Some(1)`.
 
 ## Formatting and Diagnostics
 
@@ -55,7 +55,7 @@ Formatting follows the editor's indentation and the document's LF or CRLF settin
 
 Literal spellings and comment text are preserved. VS Code normalizes line endings when it applies edits, so files that mix LF and CRLF may change. Invalid documents are not partially formatted. An ASON document must contain exactly one root value, so empty and comment-only documents cannot be formatted.
 
-Live validation reports the first syntax or validation error after a short delay. It checks ASON itself, not a user-defined schema. Errors are attached to the source they describe. For example, a list element whose type differs from the earlier elements, or a reserved word such as `Some` or `NaN` used as an enumeration type name, is underlined in place.
+Live validation reports the first syntax or validation error after a short delay. It checks ASON itself, not a user-defined schema. Errors are attached to the source they describe. For example, a list element whose type differs from the earlier elements, or a reserved keyword such as `true` or `NaN` used as an enumeration type name, is underlined in place. The keywords `true`, `false`, `NaN`, and `Inf`, including type-suffixed forms such as `NaN_f32`, cannot be used as object keys, enumeration type names, or variant names.
 
 | Setting                       | Default          | Description                                      |
 | ----------------------------- | ---------------- | ------------------------------------------------ |

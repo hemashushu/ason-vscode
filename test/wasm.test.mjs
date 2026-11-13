@@ -88,19 +88,32 @@ test("WASM validates and preserves enum shorthands", () => {
         assert.equal(format(result.text).text, result.text, value);
         assert.ok(result.text.startsWith(value.split("(")[0]), value);
     }
-    for (const key of ["Some", "None", "Ok", "Err"]) {
-        assert.equal(
-            JSON.parse(validateDocument(`{${key}: 1}`)).status,
-            "error",
-            key,
-        );
-    }
     for (const key of ["some", "NONE", "ok", "ERR", "SomeValue"]) {
         assert.equal(
             JSON.parse(validateDocument(`{${key}: 1}`)).status,
             "success",
             key,
         );
+    }
+});
+
+test("WASM accepts enum shorthand names as identifiers", () => {
+    for (const name of ["Some", "None", "Ok", "Err"]) {
+        for (const value of [
+            `{${name}: 1}`,
+            `Shape::Rect{${name}: 1}`,
+            `${name}::Variant`,
+            `Custom::${name}(1)`,
+        ]) {
+            assert.equal(
+                JSON.parse(validateDocument(value)).status,
+                "success",
+                value,
+            );
+            const result = format(value);
+            assert.equal(result.status, "success", value);
+            assert.equal(result.text, `${value}\n`, value);
+        }
     }
 });
 
@@ -161,23 +174,36 @@ test("WASM rejects redefined Option and Result variants", () => {
 
 test("WASM rejects reserved words as object keys and enumeration names", () => {
     const reserved = [
-        "Some",
-        "None",
-        "Ok",
-        "Err",
         "NaN",
         "Inf",
+        "NaN_f32",
+        "NaN_f64",
+        "Inf_f32",
+        "Inf_f64",
         "true",
         "false",
     ];
     for (const word of reserved) {
         for (const value of [`{${word}: 1}`, `Shape::Rect{${word}: 1}`]) {
-            const error = JSON.parse(validateDocument(value)).error;
-            assert.equal(value.slice(error?.start, error?.end), word, value);
+            const result = JSON.parse(validateDocument(value));
+            assert.equal(result.status, "error", value);
+            assert.equal(
+                value.slice(result.error.start, result.error.end),
+                word,
+                value,
+            );
         }
-        const error = JSON.parse(validateDocument(`${word}::Variant`)).error;
-        assert.ok(error?.message.includes("reserved"), word);
-        assert.deepEqual([error.start, error.end], [0, word.length], word);
+        for (const value of [`${word}::Variant`, `Custom::${word}`]) {
+            const result = JSON.parse(validateDocument(value));
+            assert.equal(result.status, "error", value);
+            assert.ok(result.error.message.includes("keyword"), value);
+            const start = value.indexOf(word);
+            assert.deepEqual(
+                [result.error.start, result.error.end],
+                [start, start + word.length],
+                value,
+            );
+        }
     }
 });
 

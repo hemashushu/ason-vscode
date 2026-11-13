@@ -62,6 +62,7 @@ test('enum shorthands are case-sensitive whole identifiers', () => {
   for (const variant of ['Some', 'None', 'Ok', 'Err']) {
     scoped(variant, variant, 'constant.other.enum.ason');
     scoped(`Type::${variant}`, variant, 'constant.other.enum.ason');
+    scoped(`${variant}::Value`, variant, 'entity.name.type.enum.ason');
     for (const identifier of [`${variant}Value`, `x${variant}`, `${variant}中`]) {
       assert.ok(!tokenize(identifier).flat().some(token => token.scopes.includes('constant.other.enum.ason')));
     }
@@ -69,7 +70,17 @@ test('enum shorthands are case-sensitive whole identifiers', () => {
   for (const identifier of ['some', 'NONE', 'ok', 'ERR']) {
     assert.ok(!tokenize(identifier).flat().some(token => token.scopes.includes('constant.other.enum.ason')));
   }
-  scoped('Some::Value', 'Some', 'entity.name.type.enum.ason');
+});
+test('enum shorthand names used as object keys have property scopes', () => {
+  for (const name of ['Some', 'None', 'Ok', 'Err']) {
+    for (const space of ['', ' ', '\t']) {
+      for (const source of [`{${name}${space}: 1}`, `Shape::Rect{${name}${space}: 1}`]) {
+        scoped(source, name, 'variable.other.property.ason');
+        assert.ok(!tokenize(source).flat().some(token => token.text === name && token.scopes.includes('constant.other.enum.ason')));
+      }
+    }
+  }
+  scoped('{Some: Some(1) None: None Ok: Ok(1) Err: Err("e")}', 'Some', 'constant.other.enum.ason');
 });
 test('normal escapes and unsupported escape sequences', () => {
   scoped('"a\\u{1f600}\\n"', '\\u{1f600}', 'constant.character.escape.ason');
