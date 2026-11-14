@@ -1,4 +1,4 @@
-# ASON for Visual Studio Code
+# ASON extension for Visual Studio Code
 
 ASON is a typed data format based on JSON. This extension adds syntax highlighting, formatting, and live validation for ASON files.
 
@@ -8,25 +8,30 @@ It works in desktop VS Code and VS Code for the Web, including vscode.dev and gi
 
 <!-- code_chunk_output -->
 
-- [Install and Use](#install-and-use)
-- [Formatting and Diagnostics](#formatting-and-diagnostics)
-- [Build from Source](#build-from-source)
-  - [Requirements](#requirements)
-  - [Get the Source](#get-the-source)
-  - [Build](#build)
-  - [Test](#test)
-  - [Package](#package)
-  - [Develop](#develop)
-  - [Continuous Integration](#continuous-integration)
-- [Links](#links)
-- [License](#license)
+- [1 Install](#1-install)
+- [2 Use](#2-use)
+- [3 Formatting and Diagnostics](#3-formatting-and-diagnostics)
+- [4 Build from Source](#4-build-from-source)
+  - [4.1 Requirements](#41-requirements)
+  - [4.2 Get the Source](#42-get-the-source)
+  - [4.3 Build](#43-build)
+  - [4.4 Test](#44-test)
+  - [4.5 Package](#45-package)
+  - [4.6 Develop](#46-develop)
+  - [4.7 Continuous Integration](#47-continuous-integration)
+- [5 Links](#5-links)
+- [6 License](#6-license)
 
 <!-- /code_chunk_output -->
 
 
-## Install and Use
+## 1 Install
 
-Install **ASON** (`Hemashushu.ason-vscode`) from the Extensions view. You can also build the VSIX file `ason-vscode.vsix` from the source and install it using _Extensions: Install from VSIX..._ in VS Code.
+Install ASON extension [Hemashushu.ason-vscode](https://marketplace.visualstudio.com/items?itemName=Hemashushu.ason-vscode) from the _Extensions_ view in Visual Studio Code.
+
+You can also build the VSIX file `ason-vscode.vsix` from the source and install it using _Extensions: Install from VSIX..._ command in Visual Studio Code. See the [Build from Source](#build-from-source) section below.
+
+## 2 Use
 
 Open a `.ason` file to get started. For an untitled file, select _ASON_ as the language mode. Choose _Format Document_ to format the document.
 
@@ -49,7 +54,7 @@ Syntax highlighting follows your active theme and covers nested comments, typed 
 
 The `Option` and `Result` variants also support the case-sensitive shorthand forms `Some(value)`, `None`, `Ok(value)`, and `Err(value)`. These four names are not reserved: they can also be used as object keys, enumeration type names, and variant names, as in `{Some: Some(1)}`, `Some::Value`, and `Custom::Some(1)`.
 
-## Formatting and Diagnostics
+## 3 Formatting and Diagnostics
 
 Formatting follows the editor's indentation and the document's LF or CRLF setting. Containers stay on one line when they fit within 80 characters, unless comments or multiline tokens require line breaks; longer containers use multiple lines. Formatting removes optional commas and extra blank lines, adds a space after each colon, and ends the document with a newline.
 
@@ -65,14 +70,14 @@ Live validation reports the first syntax or validation error after a short delay
 
 The size limit applies only to live validation; you can still format larger files. Validation errors and skipped files appear in the ASON output channel. Document contents are never logged.
 
-## Build from Source
+## 4 Build from Source
 
-### Requirements
+### 4.1 Requirements
 
 - Node.js 24 or later and npm.
 - An internet connection to install dependencies and test tools.
 
-### Get the Source
+### 4.2 Get the Source
 
 Clone this repository and navigate into it:
 
@@ -81,7 +86,7 @@ git clone https://github.com/hemashushu/ason-vscode.git
 cd ason-vscode
 ```
 
-### Build
+### 4.3 Build
 
 Run the following commands from `ason-vscode` workspace:
 
@@ -90,7 +95,7 @@ npm ci
 npm run build
 ```
 
-### Test
+### 4.4 Test
 
 The web tests require Chromium. Install it before the first run:
 
@@ -114,7 +119,7 @@ npm run test:desktop
 
 `npm test` builds the extension and runs the unit tests. The web and desktop commands run integration tests in their respective VS Code hosts. The desktop tests download a VS Code test build by default; set `VSCODE_EXECUTABLE` to use an existing installation. On headless Linux, run them with `xvfb-run -a npm run test:desktop` (requires Xvfb).
 
-### Package
+### 4.5 Package
 
 ```sh
 npm run package
@@ -122,19 +127,21 @@ npm run package
 
 This creates `ason-vscode.vsix` in the current directory. Install it with _Extensions: Install from VSIX..._ in VS Code.
 
-### Develop
+### 4.6 Develop
 
 Run `npm ci`, then press F5 to launch the **Run ASON Web Extension** configuration. Use `npm run watch` to rebuild as you edit.
 
-### Continuous Integration
+### 4.7 Continuous Integration
 
 The manually triggered **Test and Package** workflow runs the tests and builds a VSIX on Ubuntu. It uploads the package as a workflow artifact and does not publish a release.
 
-## Links
+## 5 Links
 
 - [ASON Specification](https://github.com/hemashushu/ason/blob/main/docs/specification.md)
-- [ASON Visual Studio Code Extension](https://github.com/hemashushu/ason-vscode)
+- [ASON Visual Studio Code Extension](https://marketplace.visualstudio.com/items?itemName=Hemashushu.ason-vscode)
+- [ASON Converter (ason2b, ason2j)](https://github.com/hemashushu/ason-converter)
+- [ASON Formatter (asonfmt)](https://github.com/hemashushu/ason-formatter)
 
-## License
+## 6 License
 
 Licensed under MPL-2.0 with additional terms. See [LICENSE](LICENSE), [LICENSE.additional](LICENSE.additional), and [CONTRIBUTING](CONTRIBUTING). Third-party license notices are listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
