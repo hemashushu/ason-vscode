@@ -1,6 +1,6 @@
 # ASON extension for Visual Studio Code
 
-ASON is a typed data format based on JSON. This extension adds syntax highlighting, formatting, and live validation for ASON files.
+[ASON](https://github.com/hemashushu/ason) is a strongly typed, JSON-like data format built as a common language for AI agents, tools, and people. This extension adds syntax highlighting, formatting, and live validation for ASON files.
 
 It works in desktop VS Code and VS Code for the Web, including vscode.dev and github.dev, and supports remote and virtual workspaces. Files are processed locally and are never sent to a service.
 
