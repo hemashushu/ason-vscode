@@ -29,7 +29,7 @@ It works in desktop VS Code and VS Code for the Web, including vscode.dev and gi
 
 Install ASON extension [Hemashushu.ason-vscode](https://marketplace.visualstudio.com/items?itemName=Hemashushu.ason-vscode) from the _Extensions_ view in Visual Studio Code.
 
-You can also build the VSIX file `ason-vscode.vsix` from the source and install it using _Extensions: Install from VSIX..._ command in Visual Studio Code. See the [Build from Source](#build-from-source) section below.
+You can also download the VSIX file `ason-vscode.vsix` from the [releases page](https://github.com/hemashushu/ason-vscode/releases) or build it from the source and install it using _Extensions: Install from VSIX..._ command in Visual Studio Code. See the [Build from Source](#build-from-source) section below.
 
 ## 2 Use
 
