@@ -135,6 +135,8 @@ Run `npm ci`, then press F5 to launch the **Run ASON Web Extension** configurati
 
 The manually triggered **Test and Package** workflow runs the tests and builds a VSIX on Ubuntu. It uploads the package as a workflow artifact and does not publish a release.
 
+The manually triggered [Open VSX](.github/workflows/publish_open_vsx.yml) and [VS Code Marketplace](.github/workflows/publish_vscode_marketplace.yml) publishing workflows skip versions already published to their respective registries.
+
 ## 5 Links
 
 - [ASON Specification](https://github.com/hemashushu/ason/blob/main/docs/specification.md)

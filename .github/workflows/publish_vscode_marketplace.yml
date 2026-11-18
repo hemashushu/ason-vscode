@@ -20,4 +20,4 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Publish with GitHub Actions Trusted Publishing
-        run: npx @vscode/vsce publish --oidc
+        run: npx @vscode/vsce publish --oidc --skip-duplicate

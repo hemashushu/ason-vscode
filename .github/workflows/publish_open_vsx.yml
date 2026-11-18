@@ -24,4 +24,4 @@ jobs:
       - name: Package VSIX
         run: npm run package
       - name: Publish with GitHub Actions Trusted Publishing
-        run: npx --yes ovsx@1.4.0 publish ason-vscode.vsix --trusted-publishing
+        run: npx --yes ovsx@1.4.0 publish ason-vscode.vsix --trusted-publishing --skip-duplicate
