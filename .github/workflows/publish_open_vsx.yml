@@ -1,0 +1,27 @@
+# Ref: https://github.com/eclipse-openvsx/openvsx/wiki/Trusted-Publishing
+
+name: Publish to Open VSX Registry
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - name: Package VSIX
+        run: npm run package
+      - name: Publish with GitHub Actions Trusted Publishing
+        run: npx --yes ovsx@1.4.0 publish ason-vscode.vsix --trusted-publishing

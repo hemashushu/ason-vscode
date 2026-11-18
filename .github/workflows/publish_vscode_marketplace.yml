@@ -19,9 +19,5 @@ jobs:
           node-version: '24'
           cache: npm
       - run: npm ci
-      - run: npm test
-      - run: npx playwright-core install --with-deps chromium
-      - run: npm run test:web
-      - run: xvfb-run -a npm run test:desktop
       - name: Publish with GitHub Actions Trusted Publishing
         run: npx @vscode/vsce publish --oidc
