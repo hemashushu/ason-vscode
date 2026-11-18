@@ -281,10 +281,13 @@ test(
             worker.postMessage({
                 type: "format",
                 id: 1,
-                source: "{a:1}",
+                source: "{a:1 /* keep */ b:[2 3],}",
                 options: { tabSize: 2, insertSpaces: true, crlf: false },
             });
-            assert.equal((await reply)[0].result.text, "{a: 1}\n");
+            assert.equal(
+                (await reply)[0].result.text,
+                "{\n  a: 1 /* keep */\n  b: [2, 3]\n}\n",
+            );
         } finally {
             await worker.terminate();
         }

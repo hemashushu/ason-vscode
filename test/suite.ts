@@ -90,10 +90,10 @@ const cases: [string, () => Promise<void>][] = [
         async () => {
             const document = await vscode.workspace.openTextDocument({
                 language: "ason",
-                content: "{answer:0x2a}",
+                content: "{answer:0x2a values:[1 2,3,],}",
             });
             await format(document);
-            assertText(document, "{answer: 0x2a}\n");
+            assertText(document, "{answer: 0x2a, values: [1, 2, 3]}\n");
             const edits = await vscode.commands.executeCommand<
                 vscode.TextEdit[]
             >("vscode.executeFormatDocumentProvider", document.uri, {
@@ -125,7 +125,7 @@ const cases: [string, () => Promise<void>][] = [
             await format(document);
             assertText(
                 document,
-                '{Some: Some(Ok(11)) None: None Ok: Ok(11) Err: Err("failed")}\n',
+                '{Some: Some(Ok(11)), None: None, Ok: Ok(11), Err: Err("failed")}\n',
             );
         },
     ],

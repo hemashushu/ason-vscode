@@ -5,8 +5,8 @@
     enabled: true
     bytes: h"48 65 6c 6c 6f"
     created: d"2024-03-16T16:30:50+08:00"
-    color: Color::Rgb(255_u8 127_u8 63_u8)
+    color: Color::Rgb(255_u8, 127_u8, 63_u8)
     pattern: r##"a "quoted" value"##
     /* outer /* nested */ comment */
-    values: [0xff 0b10 0o755]
+    values: [0xff, 0b10, 0o755]
 }

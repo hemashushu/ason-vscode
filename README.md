@@ -56,7 +56,7 @@ The `Option` and `Result` variants also support the case-sensitive shorthand for
 
 ## 3 Formatting and Diagnostics
 
-Formatting follows the editor's indentation and the document's LF or CRLF setting. Containers stay on one line when they fit within 80 characters, unless comments or multiline tokens require line breaks; longer containers use multiple lines. Formatting removes optional commas and extra blank lines, adds a space after each colon, and ends the document with a newline.
+Formatting follows the editor's indentation and the document's LF or CRLF setting. Containers stay on one line when they fit within 80 characters, unless comments or multiline tokens require line breaks. A comma and a space separate entries in single-line containers, as in `{name: "ASON", values: [1, 2, 3]}`. Multiline containers put each entry on its own line and use line breaks as separators. Formatting removes trailing commas and extra blank lines, adds a space after each colon, and ends the document with a newline.
 
 Literal spellings and comment text are preserved. VS Code normalizes line endings when it applies edits, so files that mix LF and CRLF may change. Invalid documents are not partially formatted. An ASON document must contain exactly one root value, so empty and comment-only documents cannot be formatted.
 
